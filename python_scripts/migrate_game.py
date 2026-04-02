@@ -1,0 +1,1 @@
+"""loads the dataset and create the corresponding sql inserts"""
