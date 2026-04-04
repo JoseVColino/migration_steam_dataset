@@ -39,3 +39,46 @@ CREATE TABLE game_categories (
 CREATE INDEX idx_reviews_appid ON reviews(appid);
 CREATE INDEX idx_metacritic_appid ON metacritic(appid);
 CREATE INDEX idx_game_categories_appid ON game_categories(appid);
+
+-- Criação da tabela principal
+CREATE TABLE game (
+    appid INT PRIMARY KEY,
+    name VARCHAR(255),
+    release_date VARCHAR(50),
+    estimated_owners_min INT,
+    estimated_owners_max INT,
+    peak_ccu INT,
+    required_age INT,
+    price NUMERIC(10, 2),
+    discount INT,
+    dlc_count INT,
+    about_the_game TEXT,
+    website TEXT,
+    achievements INT,
+    recommendations INT,
+    metacritic_url TEXT,
+    support_email TEXT,
+    support_url TEXT,
+    notes TEXT,
+    score_rank INT,
+    header_image TEXT,
+    median_playtime_forever INT,
+    median_playtime_two_weeks INT,
+    average_playtime_forever INT,
+    average_playtime_two_weeks INT
+);
+
+-- Criação da tabela de domínio (Tags)
+CREATE TABLE tags (
+    id INT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+-- Criação da tabela de relacionamento (Game_Tag)
+CREATE TABLE game_tag (
+    id_game INT,
+    id_tag INT,
+    PRIMARY KEY (id_game, id_tag),
+    FOREIGN KEY (id_game) REFERENCES game(appid),
+    FOREIGN KEY (id_tag) REFERENCES tags(id)
+);
