@@ -1,3 +1,29 @@
+-- Criação da tabela principal
+CREATE TABLE game (
+    appid INT PRIMARY KEY,
+    name VARCHAR(255),
+    release_date VARCHAR(50),
+    estimated_owners_min INT,
+    estimated_owners_max INT,
+    peak_ccu INT,
+    required_age INT,
+    price NUMERIC(10, 2),
+    discount INT,
+    dlc_count INT,
+    about_the_game TEXT,
+    website TEXT,
+    achievements INT,
+    recommendations INT,
+    support_email TEXT,
+    support_url TEXT,
+    notes TEXT,
+    score_rank INT,
+    header_image TEXT,
+    median_playtime_forever INT,
+    median_playtime_two_weeks INT,
+    average_playtime_forever INT,
+    average_playtime_two_weeks INT
+);
 -- Tabela: reviews (Originada das colunas 'Reviews', 'Positive' e 'Negative')
 CREATE TABLE reviews (
     id BIGSERIAL PRIMARY KEY,
@@ -40,33 +66,6 @@ CREATE INDEX idx_reviews_appid ON reviews(appid);
 CREATE INDEX idx_metacritic_appid ON metacritic(appid);
 CREATE INDEX idx_game_categories_appid ON game_categories(appid);
 
--- Criação da tabela principal
-CREATE TABLE game (
-    appid INT PRIMARY KEY,
-    name VARCHAR(255),
-    release_date VARCHAR(50),
-    estimated_owners_min INT,
-    estimated_owners_max INT,
-    peak_ccu INT,
-    required_age INT,
-    price NUMERIC(10, 2),
-    discount INT,
-    dlc_count INT,
-    about_the_game TEXT,
-    website TEXT,
-    achievements INT,
-    recommendations INT,
-    metacritic_url TEXT,
-    support_email TEXT,
-    support_url TEXT,
-    notes TEXT,
-    score_rank INT,
-    header_image TEXT,
-    median_playtime_forever INT,
-    median_playtime_two_weeks INT,
-    average_playtime_forever INT,
-    average_playtime_two_weeks INT
-);
 
 -- Criação da tabela de domínio (Tags)
 CREATE TABLE tags (
@@ -81,4 +80,34 @@ CREATE TABLE game_tag (
     PRIMARY KEY (id_game, id_tag),
     FOREIGN KEY (id_game) REFERENCES game(appid),
     FOREIGN KEY (id_tag) REFERENCES tags(id)
+);
+
+
+CREATE TABLE movies (
+    id SERIAL PRIMARY KEY,
+    movie_url TEXT NOT NULL,
+    jogo_id INT REFERENCES game(appid) NOT NULL
+);
+
+CREATE TABLE company (
+     id SERIAL PRIMARY KEY,
+     name TEXT NOT NULL
+);
+
+CREATE TABLE game_company (
+    id SERIAL PRIMARY KEY,
+    id_game INT REFERENCES game(appid) NOT NULL,
+    id_company INT REFERENCES company(id) NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('developer', 'publisher'))
+);
+
+CREATE TABLE generos (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE game_generos (
+    id SERIAL PRIMARY KEY,
+    id_game INT REFERENCES game(appid) NOT NULL,
+    id_genero INT REFERENCES generos(id) NOT NULL
 );
