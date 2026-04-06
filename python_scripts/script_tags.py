@@ -1,8 +1,9 @@
 import pandas as pd
 
-def formatar_texto_sql(texto):
+def texto_sql(texto):
     if pd.isna(texto) or str(texto).strip() == "": return "NULL"
-    return f"'{str(texto).replace(chr(39), '')}'"
+    texto_limpo = str(texto).replace("'", "''")
+    return f"'{texto_limpo}'"
 
 def gerar_inserts_tags():
     df = pd.read_csv('games.csv', usecols=['Tags'])
@@ -14,7 +15,7 @@ def gerar_inserts_tags():
             
     with open('inserts_tags.sql', 'w', encoding='utf-8') as f:
         for id_atual, tag in enumerate(sorted(tags_unicas), 1):
-            f.write(f"INSERT INTO tags (id, name) VALUES ({id_atual}, {formatar_texto_sql(tag)});\n")
+            f.write(f"INSERT INTO tags (id, name) VALUES ({id_atual}, {texto_sql(tag)});\n")
 
 if __name__ == "__main__":
     gerar_inserts_tags()
