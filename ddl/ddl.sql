@@ -30,9 +30,8 @@ CREATE TABLE reviews (
     appid BIGINT NOT NULL,
     review_text TEXT,
     positive INT DEFAULT 0 CHECK (positive >= 0),
-    negative INT DEFAULT 0 CHECK (negative >= 0)
-    -- Descomentar linha abaixo quando a tabela principal 'game' for criada pela equipe
-    -- CONSTRAINT fk_reviews_game FOREIGN KEY (appid) REFERENCES game(appid)  # PESQUISAR O QUE ESSA LINHA FAZ
+    negative INT DEFAULT 0 CHECK (negative >= 0),
+	CONSTRAINT fk_reviews_game FOREIGN KEY (appid) REFERENCES game(appid)
 );
 
 -- Tabela: metacritic (Originada das colunas 'Metacritic url' e 'Metacritic score')
@@ -40,9 +39,8 @@ CREATE TABLE metacritic (
     id BIGSERIAL PRIMARY KEY,
     appid BIGINT NOT NULL,
     metacritic_url TEXT,
-    metacritic_score NUMERIC CHECK (metacritic_score >= 0 AND metacritic_score <= 100)
-    -- Descomentar a linha abaixo quando a tabela principal 'game' for criada pela equipe
-    -- CONSTRAINT fk_metacritic_game FOREIGN KEY (appid) REFERENCES game(appid)
+    metacritic_score NUMERIC CHECK (metacritic_score >= 0 AND metacritic_score <= 100),
+	CONSTRAINT fk_metacritic_game FOREIGN KEY (appid) REFERENCES game(appid)
 );
 
 
@@ -55,10 +53,10 @@ CREATE TABLE categories (
 -- Tabela: game_categories
 CREATE TABLE game_categories (
     id BIGSERIAL PRIMARY KEY,
-    appid BIGINT NOT NULL, -- (BATE COM REVIEWS E METACRITIC)
+    appid BIGINT NOT NULL, 
     category_id BIGINT NOT NULL,
-    CONSTRAINT fk_gc_categories FOREIGN KEY (category_id) REFERENCES categories(id)
-    -- CONSTRAINT fk_gc_game FOREIGN KEY (appid) REFERENCES games(appid)
+    CONSTRAINT fk_gc_categories FOREIGN KEY (category_id) REFERENCES categories(id),
+	CONSTRAINT fk_gc_game FOREIGN KEY (appid) REFERENCES game(appid)
 );
 
 -- Criação de Índices para Performance
@@ -134,7 +132,7 @@ CREATE TABLE game_operating_system (
     id BIGSERIAL PRIMARY KEY,
     appid INT REFERENCES game(appid) NOT NULL,
     id_operating_system BIGINT REFERENCES operating_system(id) NOT NULL
-)
+);
 
 CREATE TABLE screenshots (
     id SERIAL PRIMARY KEY,
