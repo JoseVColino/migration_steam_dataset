@@ -1,15 +1,17 @@
 import pandas as pd
 
 def texto_sql(texto):
-    if pd.isna(texto) or str(texto).strip() == "": return "NULL"
+    if pd.isna(texto) or str(texto).strip() in ["", "nan", "None"]: return "NULL"
     # Duplica aspas simples internas (ex: Garry's Mod -> 'Garry''s Mod') e envolve com aspas
     texto_limpo = str(texto).replace("'", "''") 
     return f"'{texto_limpo}'"
 
 def numero_sql(valor):
-    if pd.isna(valor) or str(valor).strip() == "": return "NULL"
+    if pd.isna(valor) or str(valor).strip() in ["", "nan", "None"]: return "NULL"
     try:
         f_val = float(valor)
+        # Se por acaso o float resultar em NaN matemático
+        if pd.isna(f_val): return "NULL"
         return str(int(f_val)) if f_val.is_integer() else str(f_val)
     except ValueError:
         return "NULL"
@@ -19,7 +21,9 @@ def gerar_inserts_game():
     
     # low_memory=False ajuda a evitar avisos de tipos de dados mistos no Pandas
     df = pd.read_csv('games.csv', header=0, names=colunas, low_memory=False)
-    df[['est_min', 'est_max']] = df['Estimated owners'].str.split(' - ', expand=True)
+    
+    # Forçamos a coluna a ser tratada como texto (str) antes de dar o split
+    df[['est_min', 'est_max']] = df['Estimated owners'].astype(str).str.split(' - ', expand=True)
 
     with open('inserts_game.sql', 'w', encoding='utf-8') as f:
         for _, row in df.iterrows():
@@ -40,7 +44,6 @@ def gerar_inserts_game():
             med_2w = numero_sql(row['Median playtime two weeks'])
             avg_for = numero_sql(row['Average playtime forever'])
             avg_2w = numero_sql(row['Average playtime two weeks'])
-            
             about = texto_sql(row['About the game'])
             web = texto_sql(row['Website'])
             sup_e = texto_sql(row['Support email'])
@@ -48,7 +51,7 @@ def gerar_inserts_game():
             notes = texto_sql(row['Notes'])
             header = texto_sql(row['Header image'])
 
-            f.write(f"INSERT INTO game (appid, name, release_date, estimated_owners_min, estimated_owners_max, peak_ccu, required_age, price, discount, dlc_count, about_the_game, website, achievements, recommendations, support_email, support_url, notes, score_rank, header_image, median_playtime_forever, median_playtime_two_weeks, average_playtime_forever, average_playtime_two_weeks) VALUES ({appid}, {name}, {rel_date}, {est_min}, {est_max}, {peak}, {age}, {price}, {disc}, {dlc}, {about}, {web}, {ach}, {rec}, {meta}, {sup_e}, {sup_u}, {notes}, {rank}, {header}, {med_for}, {med_2w}, {avg_for}, {avg_2w});\n")
+            f.write(f"INSERT INTO game (appid, name, release_date, estimated_owners_min, estimated_owners_max, peak_ccu, required_age, price, discount, dlc_count, about_the_game, website, achievements, recommendations, support_email, support_url, notes, score_rank, header_image, median_playtime_forever, median_playtime_two_weeks, average_playtime_forever, average_playtime_two_weeks) VALUES ({appid}, {name}, {rel_date}, {est_min}, {est_max}, {peak}, {age}, {price}, {disc}, {dlc}, {about}, {web}, {ach}, {rec}, {sup_e}, {sup_u}, {notes}, {rank}, {header}, {med_for}, {med_2w}, {avg_for}, {avg_2w});\n")
 
 if __name__ == "__main__":
     gerar_inserts_game()
