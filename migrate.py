@@ -21,7 +21,7 @@ DB_CONFIG = {
     "port": 5432,
     "dbname": "vaiPelaMor",
     "user": "postgres",
-    "password": "imladris",
+    "password": "",
 }
 
 CSV_PATH = "games.csv"
