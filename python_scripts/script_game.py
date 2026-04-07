@@ -1,9 +1,11 @@
 import pandas as pd
 
 def texto_sql(texto):
-    if pd.isna(texto) or str(texto).strip() in ["", "nan", "None"]: return "NULL"
-    # Duplica aspas simples internas (ex: Garry's Mod -> 'Garry''s Mod') e envolve com aspas
-    texto_limpo = str(texto).replace("'", "''") 
+    if pd.isna(texto) or str(texto).strip() == "": 
+        return "NULL"
+    texto_str = str(texto).encode('utf-8', 'ignore').decode('utf-8')
+    
+    texto_limpo = texto_str.replace("'", "''")
     return f"'{texto_limpo}'"
 
 def numero_sql(valor):
@@ -20,7 +22,7 @@ def gerar_inserts_game():
     colunas = ['AppID', 'Name', 'Release date', 'Estimated owners', 'Peak CCU', 'Required age', 'Price', 'Discount', 'DLC count', 'About the game', 'Supported languages', 'Full audio languages', 'Reviews', 'Header image', 'Website', 'Support url', 'Support email', 'Windows', 'Mac', 'Linux', 'User score', 'Positive', 'Negative', 'Score rank', 'Achievements', 'Recommendations', 'Notes', 'Average playtime forever', 'Average playtime two weeks', 'Median playtime forever', 'Median playtime two weeks', 'Developers', 'Publishers', 'Categories', 'Genres', 'Tags', 'Screenshots', 'Movies']
     
     # low_memory=False ajuda a evitar avisos de tipos de dados mistos no Pandas
-    df = pd.read_csv('games.csv', header=0, names=colunas, low_memory=False)
+    df = pd.read_csv('games.csv', low_memory=False)
     
     # Forçamos a coluna a ser tratada como texto (str) antes de dar o split
     df[['est_min', 'est_max']] = df['Estimated owners'].astype(str).str.split(' - ', expand=True)
