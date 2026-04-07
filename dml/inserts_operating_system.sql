@@ -1,0 +1,1 @@
+INSERT INTO operating_system (name) VALUES ('Windows'), ('Mac'), ('Linux')

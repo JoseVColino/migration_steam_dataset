@@ -111,3 +111,33 @@ CREATE TABLE game_generos (
     id_game INT REFERENCES game(appid) NOT NULL,
     id_genero INT REFERENCES generos(id) NOT NULL
 );
+
+CREATE TABLE languages (
+    id BIGSERIAL PRIMARY KEY,
+    language_name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE game_languages (
+    id BIGSERIAL PRIMARY KEY,
+    appid INT REFERENCES game(appid) NOT NULL,
+    id_language BIGINT REFERENCES languages(id) NOT NULL,
+    support_type TEXT NOT NULL CHECK (support_type IN ('supported', 'audio'))
+);
+
+CREATE TABLE operating_system (
+    id BIGSERIAL PRIMARY KEY,
+    name varchar(255) NOT NULL
+);
+
+
+CREATE TABLE game_operating_system (
+    id BIGSERIAL PRIMARY KEY,
+    appid INT REFERENCES game(appid) NOT NULL,
+    id_operating_system BIGINT REFERENCES operating_system(id) NOT NULL
+)
+
+CREATE TABLE screenshots (
+    id SERIAL PRIMARY KEY,
+    screenshot_url TEXT NOT NULL,
+    appid INT REFERENCES game(appid) NOT NULL
+);
